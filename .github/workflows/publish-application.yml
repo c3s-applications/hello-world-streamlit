@@ -29,6 +29,31 @@ jobs:
         tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:latest
         build-args: |
           public_url=$APP_PATH
+  
+  deploy_helm_chart:
+    needs:
+      - build_and_push
+    name: Deploy helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: 'Deploy'
+        uses: 'deliverybot/helm@v1'
+        with:
+          release: 'latest'
+          namespace: 'helm-dev-apps'
+          chart: 'c3s-applications/c3s-applications'
+          repo: 'https://eccr.ecmwf.int/chartrepo/c3s-applications'
+          repo-alias: c3s-applications
+          # token: '${{ github.token }}'
+          values: |
+            name: hello-world
+            deployment:
+              port: 8501
+        env:
+          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+
+
 
       
       

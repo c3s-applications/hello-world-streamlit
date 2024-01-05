@@ -1,0 +1,9 @@
+name: hello-world
+deployment:
+  image: eccr.ecmwf.int/c3s-applications/app-hello-world
+  tag: 2023.1.0
+  port: 8501
+ingress:
+  hostname: ecds-test.copernicus-climate.eu
+  path: /c3s-apps/hello-world/
+  
