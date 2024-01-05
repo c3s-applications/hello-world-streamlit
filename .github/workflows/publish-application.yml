@@ -48,7 +48,7 @@ jobs:
       - name: "Update values"
         run: ls; touch temp.txt; git add temp.txt; git commit -m"temp"
       - name: "Push back to main"
-        run: git push origin master
+        run: git push origin main
       
 
 
