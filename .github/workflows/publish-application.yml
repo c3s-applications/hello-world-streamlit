@@ -30,28 +30,26 @@ jobs:
   #       build-args: |
   #         public_url=$APP_PATH
   
-  deploy_helm_chart:
+  update_helm_chart_values:
     # needs:
     #   - build_and_push
     name: Deploy helm chart
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: 'Deploy'
-        uses: 'deliverybot/helm@v1.5.0'
-        # with:
-        #   release: 'latest'
-        #   namespace: 'helm-dev-apps'
-        #   chart: "c3s-applications/c3s-applications"
-        #   repository: 'https://eccr.ecmwf.int/chartrepo/c3s-applications'
-        #   # repo-alias: c3s-applications
-        #   # token: '${{ github.token }}'
-        #   values: |
-        #     name: hello-world
-        #     deployment:
-        #       port: 8501
-        # env:
-        #   KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+      - uses: actions/checkout@v3
+        with:
+          repository: c3s-applications/app-hello-world
+          ref: main
+          token: ${{  secrets.TOKEN  }}
+      - name: 'Setup git config'
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: "Update values"
+        run: ls; touch temp.txt; git add temp.txt; git commit -m"temp"
+      - name: "Push back to main"
+        run: git push origin master
+      
 
 
 
