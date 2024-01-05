@@ -59,7 +59,7 @@ jobs:
           git add .
           git commit -m"Updating values for ${{ github.event.repository.name }}"
       - name: "Push back to main"
-        run: git push origin main
+        run: cd helm-chart; git push origin main
       
 
 
