@@ -69,7 +69,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: 'Deploy'
-      uses: 'headout/helm@v1.7.6'
+      uses: 'headout/helm@v1.7.4'
       with:
         release: 'nginx'
         track: canary
