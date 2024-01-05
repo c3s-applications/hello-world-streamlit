@@ -43,8 +43,8 @@ jobs:
           release: 'latest'
           namespace: 'helm-dev-apps'
           chart: 'c3s-applications/c3s-applications'
-          repo: 'https://eccr.ecmwf.int/chartrepo/c3s-applications'
-          repo-alias: c3s-applications
+          repository: 'https://eccr.ecmwf.int/chartrepo/c3s-applications'
+          #repo-alias: c3s-applications
           # token: '${{ github.token }}'
           values: |
             name: hello-world
