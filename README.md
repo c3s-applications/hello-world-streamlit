@@ -35,25 +35,12 @@ localhost:8080
 
 ## Build the production version of application and push to harbor
 
-**Create a docker build context which build images for amd and arm platforms**
+The actions in this repository are set up to build the docker image and push to harbor ready for deployment
+on the CDS. The build and push actions use the following secrets and variables:
 
-```bash
-docker buildx create --name my-app-ctx --platform="linux/amd64" 
-# if you need to provide arm64 support include the folloing in the platform: ",linux/arm64" 
-```
+- secrets.HARBOR_USERNAME (Organisation secret with credentials for harbor)
+- secrets.HARBOR_PASSWORD (Organisation secret with credentials for harbor)
+- github.event.repository.name (repo name, that is used as the directory in harbor)
+- $APP_PATH (When JS app, this is applied at build time to ensure that the app has correct build path)
 
-**Build the docker image for your app and push to harbor (e.g. eccr.ecmwf.int)**
-
-You will need to be logged in to your harbor and have appropriate permissions to upload your image. 
-
-```
-app="app-era5-comparison"
-
-docker buildx build \
-  --tag "eccr.ecmwf.int/cads/${app}:latest" \
-  --builder=my-app-ctx \
-  --platform=linux/amd64\   # ,linux/arm64 \
-  --push \
-  "${app}/"
-```
 
