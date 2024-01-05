@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: c3s-applications/app-hello-world
+          repository: c3s-applications/helm-chart
           ref: main
           token: ${{  secrets.TOKEN  }}
       - name: 'Setup git config'
