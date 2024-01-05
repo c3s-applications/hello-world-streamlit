@@ -64,32 +64,47 @@ jobs:
 
 
 
+  # deployment:
+  #   runs-on: 'ubuntu-latest'
+  #   steps:
+  #   - uses: actions/checkout@v1
+
+  #   - name: 'Deploy'
+  #     uses: 'deliverybot/helm@v1.5.0'
+  #     with:
+  #       release: 'nginx'
+  #       track: canary
+  #       namespace: 'helm-apps-dev'
+  #       chart: 'c3s-applications'
+  #       # chart-version: 'latest'
+  #       token: '${{ github.token }}'
+  #       value-files: >-
+  #         [
+  #           "values.dev.yaml", 
+  #           "values.prod.yaml"
+  #         ]
+  #       repo: https://eccr.ecmwf.int/chartrepo/c3s-applications
+  #       repo-alias: c3s-applications
+  #       repo-username: ${{ secrets.HARBOR_USERNAME  }}
+  #       repo-password: ${{ secrets.HARBOR_PASSWORD  }}
+  #     env:
+  #       KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
   deployment:
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v1
 
     - name: 'Deploy'
-      uses: 'deliverybot/helm@v1.5.0'
+      uses: 'deliverybot/helm@v1'
       with:
         release: 'nginx'
         track: canary
-        namespace: 'helm-apps-dev'
-        chart: 'c3s-applications'
-        # chart-version: 'latest'
+        namespace: 'default'
+        chart: 'app'
         token: '${{ github.token }}'
-        value-files: >-
-          [
-            "values.dev.yaml", 
-            "values.prod.yaml"
-          ]
-        repo: https://eccr.ecmwf.int/chartrepo/c3s-applications
-        repo-alias: c3s-applications
-        repo-username: ${{ secrets.HARBOR_USERNAME  }}
-        repo-password: ${{ secrets.HARBOR_PASSWORD  }}
+        values: |
+          name: foobar
       env:
         KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-      
-      
       
       
