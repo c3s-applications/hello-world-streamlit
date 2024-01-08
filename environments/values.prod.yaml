@@ -1,7 +1,7 @@
 name: hello-world-streamlit
 deployment:
   image: eccr.ecmwf.int/c3s-applications/app-hello-world
-  tag: 2023.1.0
+  tag: DUMMY_IMAGE_TAG
   port: 8501
 ingress:
   hostname: ecds-test.copernicus-climate.eu
