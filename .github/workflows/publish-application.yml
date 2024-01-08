@@ -1,65 +1,67 @@
 name: Publish application
 
+env:
+  NAME: hello-world-streamlit
+  APP_PATH: /c3s-applications/hello-world-streamlit/
+
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  # build_and_push:
-  #   name: Build and push image to Harbor
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: docker/login-action@v3
-  #     with:
-  #       registry: eccr.ecmwf.int
-  #       username: ${{ secrets.HARBOR_USERNAME  }}
-  #       password: ${{ secrets.HARBOR_PASSWORD }}
+  build_and_push:
+    name: Build and push image to Harbor
+    runs-on: ubuntu-latest
+    steps:
+    - uses: docker/login-action@v3
+      with:
+        registry: eccr.ecmwf.int
+        username: ${{ secrets.HARBOR_USERNAME  }}
+        password: ${{ secrets.HARBOR_PASSWORD }}
 
-  #   - uses: actions/checkout@v4
-  #   - name: Set up Docker Buildx
-  #     uses: docker/setup-buildx-action@v3
-  #     with:
-  #       buildkitd-flags: --debug
-  #   - name: Build the Docker image
-  #     uses: docker/build-push-action@v5
-  #     with: 
-  #       context: .
-  #       platforms: linux/amd64
-  #       push: true
-  #       tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:latest
-  #       build-args: |
-  #         public_url=$APP_PATH
+    - uses: actions/checkout@v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        buildkitd-flags: --debug
+    - name: Build the Docker image
+      uses: docker/build-push-action@v5
+      with: 
+        context: .
+        platforms: linux/amd64
+        push: true
+        tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:latest
   
-  # update_helm_chart_values:
-  #   # needs:
-  #   #   - build_and_push
-  #   name: Deploy helm chart
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout this app repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         path: ${{ github.event.repository.name }}
-  #     - name: "Checkout helm-chart repo"
-  #       uses: actions/checkout@v4
-  #       with:
-  #         path: helm-chart
-  #         repository: c3s-applications/helm-chart
-  #         ref: main
-  #         token: ${{  secrets.TOKEN  }}
-  #     - name: 'Setup git config'
-  #       run: |
-  #         cd helm-chart
-  #         git config user.name "GitHub Actions Bot"
-  #         git config user.email "<>"
-  #     - name: "Update values"
-  #       run: |
-  #         cp ${{ github.event.repository.name }}/dev-values.yaml helm-chart/application-values/${{ github.event.repository.name }}.dev.values.yaml
-  #         cd helm-chart
-  #         git add .
-  #         git commit -m"Updating values for ${{ github.event.repository.name }}"
-  #     - name: "Push back to main"
-  #       run: cd helm-chart; git push origin main
+  update_helm_chart_values:
+    # needs:
+    #   - build_and_push
+    name: Deploy helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this app repo
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.event.repository.name }}
+      - name: "Checkout helm-chart repo"
+        uses: actions/checkout@v4
+        with:
+          path: helm-chart
+          repository: c3s-applications/helm-chart
+          ref: main
+          token: ${{  secrets.TOKEN  }}
+      - name: 'Setup git config'
+        run: |
+          cd helm-chart
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: "Update values"
+        run: |
+          cp ${{ github.event.repository.name }}/dev-values.yaml helm-chart/application-values/${{ github.event.repository.name }}.dev.values.yaml
+          cd helm-chart
+          git add .
+          git commit -m"Updating values for ${{ github.event.repository.name }}"
+      - name: "Push back to main"
+        run: cd helm-chart; git push origin main
       
   deployment:
     runs-on: 'ubuntu-latest'
@@ -71,7 +73,7 @@ jobs:
     - name: "Update Helm Chart"
       run: |
         echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml;
-        helm upgrade hello-world c3s-applications/c3s-applications --values values.dev.yaml
+        helm upgrade $NAME c3s-applications/c3s-applications | helm install $NAME c3s-applications/c3s-applications --values values.dev.yaml
       env:
         KUBECONFIG: kubeconfig.yaml
     - name: "Force update of pods"
