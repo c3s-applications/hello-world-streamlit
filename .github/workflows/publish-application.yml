@@ -60,8 +60,8 @@ jobs:
     - name: "Update Helm Chart"
       run: |
         echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml && chmod 400 kubeconfig.yaml;
-        echo "helm upgrade -n $NAMESPACE $NAME c3s-applications/c3s-applications | helm install -n $NAMESPACE $NAME c3s-applications/c3s-applications --values environments/$VALUES_FILE"
-        helm upgrade -n $NAMESPACE $NAME c3s-applications/c3s-applications | helm install -n $NAMESPACE $NAME c3s-applications/c3s-applications --values environments/$VALUES_FILE
+        echo "EXCUTING: helm upgrade -n $NAMESPACE $NAME c3s-applications/c3s-applications || helm install -n $NAMESPACE $NAME c3s-applications/c3s-applications --values environments/$VALUES_FILE"
+        helm upgrade -n $NAMESPACE $NAME c3s-applications/c3s-applications || helm install -n $NAMESPACE $NAME c3s-applications/c3s-applications --values environments/$VALUES_FILE
       env:
         KUBECONFIG: kubeconfig.yaml
     - name: "Force update of pods"
