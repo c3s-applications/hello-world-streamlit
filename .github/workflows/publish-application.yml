@@ -39,7 +39,7 @@ jobs:
         context: .
         platforms: linux/amd64
         push: true
-        tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:"$IMAGE_TAG"
+        tags: "eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:$IMAGE_TAG"
   
   deployment:
     needs:
