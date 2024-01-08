@@ -65,8 +65,8 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v1
+    - uses: 'headout/helm@v1.7.6'
     - name: 'Add repo'
-      uses: 'headout/helm@v1.7.6'
       run: helm repo add --username ${{ secrets.HARBOR_USERNAME  }} --password ${{ secrets.HARBOR_PASSWORD  }} c3s-applications https://eccr.ecmwf.int/chartrepo/c3s-applications
     - name: "Deploy Application"
       run:
