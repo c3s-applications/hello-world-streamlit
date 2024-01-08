@@ -70,7 +70,7 @@ jobs:
       run: helm repo add --username ${{ secrets.HARBOR_USERNAME  }} --password ${{ secrets.HARBOR_PASSWORD  }} c3s-applications https://eccr.ecmwf.int/chartrepo/c3s-applications
     - name: "Deploy Application"
       run: |
-        cat ${{ secrets.KUBECONFIG }} > kubeconfig.yaml;
+        echo ${{ secrets.KUBECONFIG }} > kubeconfig.yaml;
         helm upgrade hello-world c3s-applications/c3s-applications --values values.dev.yaml
       env:
         KUBECONFIG: kubeconfig.yaml
