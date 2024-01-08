@@ -32,36 +32,36 @@ jobs:
         push: true
         tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:latest
   
-  update_helm_chart_values:
-    # needs:
-    #   - build_and_push
-    name: Deploy helm chart
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout this app repo
-        uses: actions/checkout@v4
-        with:
-          path: ${{ github.event.repository.name }}
-      - name: "Checkout helm-chart repo"
-        uses: actions/checkout@v4
-        with:
-          path: helm-chart
-          repository: c3s-applications/helm-chart
-          ref: main
-          token: ${{  secrets.TOKEN  }}
-      - name: 'Setup git config'
-        run: |
-          cd helm-chart
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-      - name: "Update values"
-        run: |
-          cp ${{ github.event.repository.name }}/dev-values.yaml helm-chart/application-values/${{ github.event.repository.name }}.dev.values.yaml
-          cd helm-chart
-          git add .
-          git commit -m"Updating values for ${{ github.event.repository.name }}"
-      - name: "Push back to main"
-        run: cd helm-chart; git push origin main
+  # update_helm_chart_values:
+  #   # needs:
+  #   #   - build_and_push
+  #   name: Deploy helm chart
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout this app repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: ${{ github.event.repository.name }}
+  #     - name: "Checkout helm-chart repo"
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: helm-chart
+  #         repository: c3s-applications/helm-chart
+  #         ref: main
+  #         token: ${{  secrets.TOKEN  }}
+  #     - name: 'Setup git config'
+  #       run: |
+  #         cd helm-chart
+  #         git config user.name "GitHub Actions Bot"
+  #         git config user.email "<>"
+  #     - name: "Update values"
+  #       run: |
+  #         cp ${{ github.event.repository.name }}/dev-values.yaml helm-chart/application-values/${{ github.event.repository.name }}.dev.values.yaml
+  #         cd helm-chart
+  #         git add .
+  #         git commit -m"Updating values for ${{ github.event.repository.name }}"
+  #     - name: "Push back to main"
+  #       run: cd helm-chart; git push origin main
       
   deployment:
     runs-on: 'ubuntu-latest'
