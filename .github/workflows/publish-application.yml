@@ -1,8 +1,10 @@
-name: Publish application
+name: Publish development application
 
 env:
   NAME: hello-world-streamlit
+  NAMESPACE: cads-apps-dev
   APP_PATH: /c3s-applications/hello-world-streamlit/
+  IMAGE_TAG: latest
 
 on:
   push:
@@ -20,6 +22,13 @@ jobs:
         password: ${{ secrets.HARBOR_PASSWORD }}
 
     - uses: actions/checkout@v4
+
+    - name: Set release environment variables
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      run: |
+        echo "IMAGE_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        echo "NAMESPACE=cads-apps-prod" >> $GITHUB_ENV
+      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       with:
@@ -30,7 +39,7 @@ jobs:
         context: .
         platforms: linux/amd64
         push: true
-        tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:latest
+        tags: eccr.ecmwf.int/c3s-applications/${{ github.event.repository.name }}:$IMAGE_TAG
   
   deployment:
     needs:
@@ -44,7 +53,7 @@ jobs:
     - name: "Update Helm Chart"
       run: |
         echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml;
-        helm upgrade $NAME c3s-applications/c3s-applications | helm install $NAME c3s-applications/c3s-applications --values values.dev.yaml
+        helm upgrade -n $NAMESPACE $NAME c3s-applications/c3s-applications | helm install -n $NAMESPACE $NAME c3s-applications/c3s-applications --values environments/values.dev.yaml
       env:
         KUBECONFIG: kubeconfig.yaml
     - name: "Force update of pods"

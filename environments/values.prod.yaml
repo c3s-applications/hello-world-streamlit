@@ -1,4 +1,4 @@
-name: hello-world
+name: hello-world-streamlit
 deployment:
   image: eccr.ecmwf.int/c3s-applications/app-hello-world
   tag: 2023.1.0
